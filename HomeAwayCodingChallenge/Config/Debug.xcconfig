@@ -1,0 +1,15 @@
+//
+//  Debug.xcconfig
+//  HomeAwayCodingChallenge
+//
+//  Created by Justin Veach on 6/7/18.
+//  Copyright © 2018 Justin Veach. All rights reserved.
+//
+
+#include "Pods/Target Support Files/Pods-HomeAwayCodingChallengeUITests/Pods-HomeAwayCodingChallengeUITests.debug.xcconfig"
+
+SEATGEEK_API_URL=https:/$()/api.seatgeek.com/2/
+SEATGEEK_CLIENT_ID=MTE4NDk4OTN8MTUyODM5MTc3MS42MQ
+
+// Type ahead search data is cached. If the last search has been cached for longer than this time period, we will perform another search.
+VALID_DATA_TIME=120000 // milliseconds (2 minutes)
