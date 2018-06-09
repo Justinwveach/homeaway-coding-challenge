@@ -9,5 +9,5 @@
 import Foundation
 
 protocol LoadItemsDelegate {
-    func loadMoreItems(for results: SearchResults)
+    func loadMoreItems(for section: SectionData)
 }

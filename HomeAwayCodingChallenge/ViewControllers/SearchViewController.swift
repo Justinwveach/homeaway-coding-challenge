@@ -19,12 +19,12 @@ class SearchViewController: UIViewController {
         return ListAdapter(updater: ListAdapterUpdater(), viewController: self, workingRangeSize: 0)
     }()
     
-    var searchResults = [ListDiffable]()
+    var sections = [ListDiffable]()
     var typeAheadSearch = TypeAheadSearch()
     
-    var eventSection = SearchResults(results: SeatGeekResults(), header: "Events", type: .event)
-    var performerSection = SearchResults(results: SeatGeekResults(), header: "Performers", type: .performer)
-    var venueSection = SearchResults(results: SeatGeekResults(), header: "Venues", type: .venue)
+    var eventSection = SectionData(results: SeatGeekResults(), header: "Events", type: .event)
+    var performerSection = SectionData(results: SeatGeekResults(), header: "Performers", type: .performer)
+    var venueSection = SectionData(results: SeatGeekResults(), header: "Venues", type: .venue)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +42,9 @@ class SearchViewController: UIViewController {
         adapter.collectionView = collectionView
         adapter.dataSource = self
         
-        searchResults.append(eventSection)
-        searchResults.append(performerSection)
-        searchResults.append(venueSection)
+        sections.append(eventSection)
+        sections.append(performerSection)
+        sections.append(venueSection)
         
         configureTypeAhead()
     }
@@ -90,7 +90,7 @@ class SearchViewController: UIViewController {
 extension SearchViewController: ListAdapterDataSource {
     
     func objects(for listAdapter: ListAdapter) -> [ListDiffable] {
-        return searchResults
+        return sections
     }
     
     func listAdapter(_ listAdapter: ListAdapter, sectionControllerFor object: Any) -> ListSectionController {
@@ -151,24 +151,21 @@ extension SearchViewController: TypeAheadSearchDelegate {
 
 extension SearchViewController: LoadItemsDelegate {
     
-    func loadMoreItems(for results: SearchResults) {
-        let api = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(results.type.rawValue)?client_id=\(seatgeekClientId)", type: results.type)
-        let r = results.results
+    func loadMoreItems(for section: SectionData) {
+        let api = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(section.type.rawValue)?client_id=\(seatgeekClientId)", type: section.type)
         
-        if r.isPageable() {
-            api.queryItems(with: r.getSearchString(), params: ["per_page": "\(r.getPageSize())", "page": "\(r.getCurrentPage() + 1)"]) { [weak self] (response: SeatGeekResults) in
+        if section.results.isPageable() {
+            api.queryItems(with: section.results.getSearchString(), params: ["per_page": "\(section.results.getPageSize())", "page": "\(section.results.getCurrentPage() + 1)"]) { [weak self] (response: SeatGeekResults) in
                 DispatchQueue.main.async { [weak self] in
-                    
-
                     guard let strongSelf = self else {
                         return
                     }
                     
                     //
-                    let indexPaths = strongSelf.getIndexPathsToUpdate(currentCount: results.results.getItems().count, additionalItems: response.getItems().count, max: response.getTotalItems(), section: results.type.sectionOrder())
+                    let indexPaths = strongSelf.getIndexPathsToUpdate(currentCount: section.results.getItems().count, additionalItems: response.getItems().count, max: response.getTotalItems(), section: section.type.sectionOrder())
                     
-                    results.results.append(items: response.getItems())
-                    if let existing = results.results as? SeatGeekResults {
+                    section.results.append(items: response.getItems())
+                    if let existing = section.results as? SeatGeekResults {
                         existing.metadata = response.metadata
                     }
                 

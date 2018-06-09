@@ -12,7 +12,7 @@ import STXImageCache
 
 class ResultsSectionController: ListSectionController {
     
-    var searchResults: SearchResults!
+    var searchResults: SectionData!
     var delegate: LoadItemsDelegate?
     
     override init() {
@@ -100,7 +100,7 @@ class ResultsSectionController: ListSectionController {
     }
     
     override func didUpdate(to object: Any) {
-        searchResults = object as? SearchResults
+        searchResults = object as? SectionData
     }
     
     override func didSelectItem(at index: Int) {

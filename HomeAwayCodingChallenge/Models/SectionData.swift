@@ -9,7 +9,7 @@
 import Foundation
 import IGListKit
 
-class SearchResults: NSObject, ListDiffable {
+class SectionData: NSObject, ListDiffable {
     
     var results: BaseSearchResult
     var header = ""
