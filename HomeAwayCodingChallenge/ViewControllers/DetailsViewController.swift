@@ -43,10 +43,10 @@ class DetailsViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // Quick hack to make the large titles multi line
-        // With more time, I would probably create a view to add the navigation bar's titleView
         navigationController?.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
+        // Quick hack to make the large titles multi line
+        // With more time, I would probably create a view to add the navigation bar's titleView
         var titleLabel: UILabel?
         var count = 0
         for item in(navigationController?.navigationBar.subviews)! {

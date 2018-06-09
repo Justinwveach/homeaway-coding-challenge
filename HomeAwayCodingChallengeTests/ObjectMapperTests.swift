@@ -47,20 +47,18 @@ class ObjectMapperTests: XCTestCase {
     func testEventMapper() {
         //let dict: Dictionary = convertToDictionary(text: jsonString)! as Dictionary
         if let event = Event(JSONString: eventJson) {
-            assert(event.title == "Test")
-            assert(event.date != nil)
-            assert(event.venue != nil)
-            assert((event.performers?.count)! > 0)
+            XCTAssert(event.title == "Test")
+            XCTAssert(event.date != nil)
+            XCTAssert(event.venue != nil)
+            XCTAssert((event.performers?.count)! > 0)
             
             if let firstPerformer = event.performers?[0] {
-                assert(firstPerformer.name == performerOneName)
+                XCTAssert(firstPerformer.name == performerOneName)
                 XCTAssert(firstPerformer.id == performerOneId)
-                
             } else {
-                assertionFailure("Perfomer is incorrect")
-            }
+                XCTFail()            }
         } else {
-            assertionFailure("Unable to create Event from json")
+            XCTFail()
         }
 
     }
