@@ -144,7 +144,12 @@ extension SearchViewController: TypeAheadSearchDelegate {
     }
     
     func canceledSearch() {
-    
+        for section in sections {
+            if let sectionData = section as? SectionData {
+                sectionData.results.removeAllItems()
+            }
+        }
+        collectionView.reloadData()
     }
     
 }

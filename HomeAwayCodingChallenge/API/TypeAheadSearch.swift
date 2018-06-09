@@ -50,20 +50,19 @@ class TypeAheadSearch: NSObject, UISearchBarDelegate {
         if searchText.count >= 2 {
             // todo: check cache
             callApis(string: searchText)
-        } else {
-            
+        } else if searchText.count == 0 {
+            delegate?.canceledSearch()
         }
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        delegate?.canceledSearch()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-    }
-    
-    fileprivate func clearSearch() {
-        
     }
     
 }
