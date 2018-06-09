@@ -18,8 +18,13 @@ class ResultsSectionController: ListSectionController {
     // Delegate that is notified if more items need to be loaded.
     var delegate: LoadItemsDelegate?
     
+    var detailsViewController: DetailsViewController!
+    
     override init() {
         super.init()
+        
+        detailsViewController = DetailsViewController(nibName: "DetailsViewController", bundle: nil)
+        
         supplementaryViewSource = self
     }
     
@@ -114,7 +119,6 @@ class ResultsSectionController: ListSectionController {
     override func didSelectItem(at index: Int) {
         if index < searchResults.results.getItems().count {
             // note: Would probably push a respective view controller for each SearchResultType (e.g. Event, Venue, or Performer). Another option would be to have a container inside the Details controller that loads the appropraite VC there.
-            let detailsViewController = DetailsViewController(nibName: "DetailsViewController", bundle: nil)
             detailsViewController.searchResult = searchResults.results.getItems()[index]
             viewController?.navigationController?.pushViewController(detailsViewController, animated: true)
         } else {

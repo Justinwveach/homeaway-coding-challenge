@@ -64,6 +64,13 @@ class SearchViewController: UIViewController {
         // Reloads the cells in case any items were favorited
         reloadCells()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Need to remove keyboard. Otherwise, it causes a weird transition animation.
+        searchBar.resignFirstResponder()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
