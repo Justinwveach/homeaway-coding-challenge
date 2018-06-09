@@ -33,7 +33,7 @@ class BaseSearchResult: Pagination, ResultList {
         preconditionFailure("Method should be implemented in subclass.")
     }
     
-    func removeAllItems() {
+    func clear() {
         preconditionFailure("Method should be implemented in subclass.")
     }
     

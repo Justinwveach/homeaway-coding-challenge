@@ -117,6 +117,10 @@ extension SearchViewController: ListAdapterDataSource {
         return nil
     }
     
+    func setSections() {
+        
+    }
+    
 }
 
 extension SearchViewController: TypeAheadSearchDelegate {
@@ -152,7 +156,7 @@ extension SearchViewController: TypeAheadSearchDelegate {
         // Search was canceled so remove all the data and update the collection view.
         for section in sections {
             if let sectionData = section as? SectionData {
-                sectionData.results.removeAllItems()
+                sectionData.results.clear()
             }
         }
         collectionView.reloadData()

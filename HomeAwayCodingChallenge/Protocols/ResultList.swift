@@ -14,6 +14,6 @@ protocol ResultList {
     
     func getItems() -> [SearchResult]
     func append(items: [SearchResult])
-    func removeAllItems()
+    func clear()
     
 }

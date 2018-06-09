@@ -54,7 +54,8 @@ class SeatGeekResults: BaseSearchResult {
         self.items.append(contentsOf: items)
     }
     
-    override func removeAllItems() {
+    override func clear() {
+        self.metadata = nil
         self.items.removeAll()
     }
 
