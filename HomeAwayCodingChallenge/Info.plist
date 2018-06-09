@@ -47,5 +47,7 @@
 	<string>$(SEATGEEK_CLIENT_ID)</string>
 	<key>VALID_DATA_TIME</key>
 	<string>$(VALID_DATA_TIME)</string>
+	<key>IS_TESTING</key>
+	<string>$(IS_TESTING)</string>
 </dict>
 </plist>

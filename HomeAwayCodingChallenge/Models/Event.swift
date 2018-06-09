@@ -20,8 +20,9 @@ struct Event: Mappable, SearchResult {
     var venue: Venue!
     var performers: [Performer]?
     
-    init(title: String) {
+    init(title: String, date: Date) {
         self.title = title
+        self.date = date
     }
     
     // MARK: - Mappable

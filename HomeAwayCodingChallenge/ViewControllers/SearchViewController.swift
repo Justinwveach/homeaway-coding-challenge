@@ -88,6 +88,10 @@ class SearchViewController: UIViewController {
         typeAheadSearch.add(api: venueApi)
         typeAheadSearch.add(api: performerApi)
         
+        #if DEBUG
+        let mockApi = MockAPI(baseURL: "")
+        typeAheadSearch.add(api: mockApi)
+        #endif
         // Set the delegate so we can receive a callback with results
         typeAheadSearch.delegate = self
         

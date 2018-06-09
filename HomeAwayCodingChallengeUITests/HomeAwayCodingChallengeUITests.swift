@@ -9,7 +9,7 @@
 import XCTest
 
 class HomeAwayCodingChallengeUITests: XCTestCase {
-        
+    
     override func setUp() {
         super.setUp()
         
@@ -28,9 +28,46 @@ class HomeAwayCodingChallengeUITests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testSearch() {
+        
+        let app = XCUIApplication()
+        app.navigationBars["HomeAwayCodingChallenge.SearchView"].searchFields["Search for Events, Performers, or Venues"].tap()
+        
+        let moreKey = app/*@START_MENU_TOKEN@*/.keys["more"]/*[[".keyboards",".keys[\"more, numbers\"]",".keys[\"more\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
+        moreKey.tap()
+        
+        app/*@START_MENU_TOKEN@*/.buttons["shift"]/*[[".keyboards",".buttons[\"more, symbols\"]",".buttons[\"shift\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        let key = app/*@START_MENU_TOKEN@*/.keys["^"]/*[[".keyboards.keys[\"^\"]",".keys[\"^\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        key.tap()
+        key.tap()
+        app.collectionViews.staticTexts["Test"].tap()
+        app.navigationBars["Test"].buttons["ic heart"].tap()
+        
+    }
+    
+    func testSearchBar() {
+        
+        let app = XCUIApplication()
+        let homeawaycodingchallengeSearchviewNavigationBar = app.navigationBars["HomeAwayCodingChallenge.SearchView"]
+        let searchForEventsPerformersOrVenuesSearchField = homeawaycodingchallengeSearchviewNavigationBar.searchFields["Search for Events, Performers, or Venues"]
+        searchForEventsPerformersOrVenuesSearchField.tap()
+        
+        let tKey = app/*@START_MENU_TOKEN@*/.keys["T"]/*[[".keyboards.keys[\"T\"]",".keys[\"T\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        tKey.tap()
+        
+        let eKey = app/*@START_MENU_TOKEN@*/.keys["e"]/*[[".keyboards.keys[\"e\"]",".keys[\"e\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        eKey.tap()
+        homeawaycodingchallengeSearchviewNavigationBar.buttons["Cancel"].tap()
+        searchForEventsPerformersOrVenuesSearchField.tap()
+        
+        let sKey = app/*@START_MENU_TOKEN@*/.keys["S"]/*[[".keyboards.keys[\"S\"]",".keys[\"S\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        sKey.tap()
+        
+        let tKey2 = app/*@START_MENU_TOKEN@*/.keys["t"]/*[[".keyboards.keys[\"t\"]",".keys[\"t\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        tKey2.tap()
+        searchForEventsPerformersOrVenuesSearchField.buttons["Clear text"].tap()
+        
     }
     
 }
