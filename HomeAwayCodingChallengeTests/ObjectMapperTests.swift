@@ -75,6 +75,8 @@ class ObjectMapperTests: XCTestCase {
         }
     }
     
+    // todo: add metadata test
+    
     func convertToDictionary(text: String) -> [String: Any]? {
         if let data = text.data(using: .utf8) {
             do {

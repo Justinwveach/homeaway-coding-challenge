@@ -15,6 +15,8 @@
 		E9008D4F20CB923500F721F2 /* BaseSearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9008D4E20CB923500F721F2 /* BaseSearchResult.swift */; };
 		E9008D5120CB990F00F721F2 /* LoadItemsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9008D5020CB990F00F721F2 /* LoadItemsDelegate.swift */; };
 		E9008D5820CC855D00F721F2 /* MockAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9008D5720CC855D00F721F2 /* MockAPI.swift */; };
+		E9008D5A20CC8A2300F721F2 /* TypeAheadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9008D5920CC8A2300F721F2 /* TypeAheadTests.swift */; };
+		E9008D5E20CC8F3D00F721F2 /* FavoriteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9008D5D20CC8F3D00F721F2 /* FavoriteTests.swift */; };
 		E96AF8A020CB0CB100AC1D0C /* FavoriteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96AF89F20CB0CB100AC1D0C /* FavoriteStore.swift */; };
 		E96AF8A220CB0CD700AC1D0C /* Favorite.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96AF8A120CB0CD700AC1D0C /* Favorite.swift */; };
 		E96AF8A420CB173700AC1D0C /* UIColor+Extras.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96AF8A320CB173700AC1D0C /* UIColor+Extras.swift */; };
@@ -27,7 +29,6 @@
 		E99D92E320C9970F004011CE /* HomeAwayCodingChallenge.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E99D92E120C9970F004011CE /* HomeAwayCodingChallenge.xcdatamodeld */; };
 		E99D92E520C9970F004011CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E99D92E420C9970F004011CE /* Assets.xcassets */; };
 		E99D92E820C9970F004011CE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E99D92E620C9970F004011CE /* LaunchScreen.storyboard */; };
-		E99D92F320C99710004011CE /* HomeAwayCodingChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99D92F220C99710004011CE /* HomeAwayCodingChallengeTests.swift */; };
 		E99D92FE20C99710004011CE /* HomeAwayCodingChallengeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99D92FD20C99710004011CE /* HomeAwayCodingChallengeUITests.swift */; };
 		E99D931520C99F38004011CE /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99D931420C99F38004011CE /* Event.swift */; };
 		E99D931920C9A421004011CE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99D931820C9A421004011CE /* Constants.swift */; };
@@ -81,6 +82,8 @@
 		E9008D4E20CB923500F721F2 /* BaseSearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSearchResult.swift; sourceTree = "<group>"; };
 		E9008D5020CB990F00F721F2 /* LoadItemsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadItemsDelegate.swift; sourceTree = "<group>"; };
 		E9008D5720CC855D00F721F2 /* MockAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAPI.swift; sourceTree = "<group>"; };
+		E9008D5920CC8A2300F721F2 /* TypeAheadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeAheadTests.swift; sourceTree = "<group>"; };
+		E9008D5D20CC8F3D00F721F2 /* FavoriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteTests.swift; sourceTree = "<group>"; };
 		E96AF89F20CB0CB100AC1D0C /* FavoriteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStore.swift; sourceTree = "<group>"; };
 		E96AF8A120CB0CD700AC1D0C /* Favorite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favorite.swift; sourceTree = "<group>"; };
 		E96AF8A320CB173700AC1D0C /* UIColor+Extras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extras.swift"; sourceTree = "<group>"; };
@@ -98,7 +101,6 @@
 		E99D92E720C9970F004011CE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E99D92E920C9970F004011CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E99D92EE20C99710004011CE /* HomeAwayCodingChallengeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeAwayCodingChallengeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E99D92F220C99710004011CE /* HomeAwayCodingChallengeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayCodingChallengeTests.swift; sourceTree = "<group>"; };
 		E99D92F420C99710004011CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E99D92F920C99710004011CE /* HomeAwayCodingChallengeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HomeAwayCodingChallengeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E99D92FD20C99710004011CE /* HomeAwayCodingChallengeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayCodingChallengeUITests.swift; sourceTree = "<group>"; };
@@ -214,9 +216,10 @@
 		E99D92F120C99710004011CE /* HomeAwayCodingChallengeTests */ = {
 			isa = PBXGroup;
 			children = (
-				E99D92F220C99710004011CE /* HomeAwayCodingChallengeTests.swift */,
 				E99D92F420C99710004011CE /* Info.plist */,
 				E9B3566320C9B278006B261C /* ObjectMapperTests.swift */,
+				E9008D5920CC8A2300F721F2 /* TypeAheadTests.swift */,
+				E9008D5D20CC8F3D00F721F2 /* FavoriteTests.swift */,
 			);
 			path = HomeAwayCodingChallengeTests;
 			sourceTree = "<group>";
@@ -609,8 +612,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E99D92F320C99710004011CE /* HomeAwayCodingChallengeTests.swift in Sources */,
+				E9008D5E20CC8F3D00F721F2 /* FavoriteTests.swift in Sources */,
 				E9B3566420C9B278006B261C /* ObjectMapperTests.swift in Sources */,
+				E9008D5A20CC8A2300F721F2 /* TypeAheadTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

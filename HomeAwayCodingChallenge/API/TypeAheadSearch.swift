@@ -15,7 +15,7 @@ class TypeAheadSearch: NSObject, UISearchBarDelegate {
     // Considerations: An API may not necessarily be returned in the order it was called. For example, we may receive our results for "Texa" after "Texas". Therefore, our delegate would receive a result set for "Texa" last when they should be presenting "Texas". Might be up to the delegate to do this check and handle appropriately.
     
     /// APIs (must implement SearchAPIDelgate) that the type ahead will search against when the user enters in characters
-    var apis = [String: SearchAPIDelegate]()
+    var apis = [SearchAPIDelegate]()
     
     // todo: implement cache that will return a result set if it has already been searched. Invalidate the cache after a certain amount of time (set in .xcconfig file)
     var cache = [String: [String: [Mappable]]]()
@@ -35,8 +35,15 @@ class TypeAheadSearch: NSObject, UISearchBarDelegate {
     ///
     /// - Parameter api: API that will handle the search based on text. Must implement SearchAPIDelegate.
     func add(api: SearchAPIDelegate) {
-        apis[api.cacheKey()] = api
+        apis.append(api)
         //cache[api.cacheKey()] = [String: [SearchResult]]()
+    }
+    
+    /// Method that can be used manually instead of relying on search bar.
+    ///
+    /// - Parameter text: Text to search.
+    func search(text: String) {
+        callApis(string: text)
     }
     
     // MARK: - Private Methods
@@ -45,7 +52,7 @@ class TypeAheadSearch: NSObject, UISearchBarDelegate {
     ///
     /// - Parameter string: The text to be searched.
     fileprivate func callApis(string: String) {
-        for (_, api) in apis {
+        for api in apis {
             api.queryItems(with: string, params: [:]) { [weak self] (results: BaseSearchResult) in
                 guard let strongSelf = self else {
                     return

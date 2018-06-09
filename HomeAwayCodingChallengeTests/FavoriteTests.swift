@@ -1,15 +1,15 @@
 //
-//  HomeAwayCodingChallengeTests.swift
+//  FavoriteTests.swift
 //  HomeAwayCodingChallengeTests
 //
-//  Created by Justin Veach on 6/7/18.
+//  Created by Justin Veach on 6/9/18.
 //  Copyright © 2018 Justin Veach. All rights reserved.
 //
 
 import XCTest
 @testable import HomeAwayCodingChallenge
 
-class HomeAwayCodingChallengeTests: XCTestCase {
+class FavoriteTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -21,15 +21,16 @@ class HomeAwayCodingChallengeTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testFavorites() {
+        let id = UUID().uuidString
+        FavoriteStore.shared.toggle(favorited: true, for: id)
+        FavoriteStore.shared.checkFavorite(id: id) { result in
+            XCTAssert(result == true)
+        }
+        
+        FavoriteStore.shared.toggle(favorited: false, for: id)
+        FavoriteStore.shared.checkFavorite(id: id) { result in
+            XCTAssert(result == false)
         }
     }
     
