@@ -11,7 +11,8 @@ import ObjectMapper
 
 protocol TypeAheadSearchDelegate: NSObjectProtocol {
 
-    func queried(items: [Mappable])
+    func queried<T: ResultList & Pagination>(results: T)
+    // todo: paged results
     func canceledSearch()
     
 }

@@ -14,13 +14,17 @@ class SearchViewController: UIViewController {
     @IBOutlet weak var collectionView: ListCollectionView!
     
     lazy var searchBar = UISearchBar(frame: .zero)
-
+    
     lazy var adapter: ListAdapter = {
         return ListAdapter(updater: ListAdapterUpdater(), viewController: self, workingRangeSize: 0)
     }()
     
     var searchResults = [ListDiffable]()
     var typeAheadSearch = TypeAheadSearch()
+    
+    var eventSection = SearchResults(results: SeatGeekResults(), header: "Events", type: .event)
+    var performerSection = SearchResults(results: SeatGeekResults(), header: "Performers", type: .performer)
+    var venueSection = SearchResults(results: SeatGeekResults(), header: "Venues", type: .venue)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +41,10 @@ class SearchViewController: UIViewController {
         collectionView.register(UINib(nibName: "ResultCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "resultCollectionViewCellIdentifier")
         adapter.collectionView = collectionView
         adapter.dataSource = self
+        
+        searchResults.append(eventSection)
+        searchResults.append(performerSection)
+        searchResults.append(venueSection)
         
         configureTypeAhead()
     }
@@ -59,12 +67,12 @@ class SearchViewController: UIViewController {
         // This is where we could configure an API to call a certain endpoint with our search text.
         // We could also search TicketMaster or provide a url for SeatGeek that will give recommendations instead of a query results
         let eventApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.event.rawValue)?client_id=\(seatgeekClientId)", type: .event)
-        let venueApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.venue.rawValue)?client_id=\(seatgeekClientId)&q=", type: .venue)
-        let performerApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.performer.rawValue)?client_id=\(seatgeekClientId)&q=", type: .performer)
+        let venueApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.venue.rawValue)?client_id=\(seatgeekClientId)", type: .venue)
+        let performerApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.performer.rawValue)?client_id=\(seatgeekClientId)", type: .performer)
         
         typeAheadSearch.add(api: eventApi)
-        //typeAheadSearch.add(api: venueApi)
-        //typeAheadSearch.add(api: performerApi)
+        typeAheadSearch.add(api: venueApi)
+        typeAheadSearch.add(api: performerApi)
         
         typeAheadSearch.delegate = self
         searchBar.delegate = typeAheadSearch
@@ -86,7 +94,8 @@ extension SearchViewController: ListAdapterDataSource {
     }
     
     func listAdapter(_ listAdapter: ListAdapter, sectionControllerFor object: Any) -> ListSectionController {
-        return ResultsSectionController()
+        
+        return ResultsSectionController(delegate: self)
     }
     
     func emptyView(for listAdapter: ListAdapter) -> UIView? {
@@ -100,31 +109,87 @@ extension SearchViewController: ListAdapterDataSource {
 }
 
 extension SearchViewController: TypeAheadSearchDelegate {
-    
-    func queried<T>(items: [T]) {
-            // Don't remove what has already been searched for
-            if items.count == 0 {
-                return
+   
+    func queried<T>(results: T) where T : Pagination, T : ResultList {
+        DispatchQueue.main.async { [unowned self] in
+            if results.getItems().count == 0 {
+                //return
             }
             
-            if let events = items as? [Event] {
-                let newSearchResults = SearchResults(results: items as! [SearchResult], header: "Events")
-                self.searchResults = [newSearchResults]
-                
+            var type: SearchResultType = .event
+            if let _ = results.getItems() as? [Event] {
+                type = .event
+                self.eventSection.results = results as! BaseSearchResult
             }
-            else if let venues = items as? [Venue] {
-                
+            else if let _ = results.getItems() as? [Performer] {
+                type = .performer
+                self.performerSection.results = results as! BaseSearchResult
             }
-            else if let performers = items as? [Performer] {
-                
+            else if let _ = results.getItems() as? [Venue] {
+                type = .venue
+                self.venueSection.results = results as! BaseSearchResult
             }
-        
-        reloadCells()
+
+            self.collectionView.reloadSections(NSIndexSet(index: type.sectionOrder()) as IndexSet)
+
+        }
+    }
+    
+    fileprivate func delete(indexPaths: [IndexPath]) {
+        DispatchQueue.main.async {
+            self.collectionView.performBatchUpdates({ () -> Void in
+                self.collectionView.deleteItems(at: indexPaths)
+            }, completion: nil)
+        }
     }
     
     func canceledSearch() {
-        
+    
     }
     
+}
+
+extension SearchViewController: LoadItemsDelegate {
+    
+    func loadMoreItems(for results: SearchResults) {
+        let api = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(results.type.rawValue)?client_id=\(seatgeekClientId)", type: results.type)
+        let r = results.results
+        
+        if r.isPageable() {
+            api.queryItems(with: r.getSearchString(), params: ["per_page": "\(r.getPageSize())", "page": "\(r.getCurrentPage() + 1)"]) { [weak self] (response: SeatGeekResults) in
+                DispatchQueue.main.async { [weak self] in
+                    
+
+                    guard let strongSelf = self else {
+                        return
+                    }
+                    
+                    //
+                    let indexPaths = strongSelf.getIndexPathsToUpdate(currentCount: results.results.getItems().count, additionalItems: response.getItems().count, max: response.getTotalItems(), section: results.type.sectionOrder())
+                    
+                    results.results.append(items: response.getItems())
+                    if let existing = results.results as? SeatGeekResults {
+                        existing.metadata = response.metadata
+                    }
+                
+                    strongSelf.collectionView.performBatchUpdates({ () -> Void in
+                        strongSelf.collectionView.insertItems(at: indexPaths as [IndexPath])
+                    }, completion:nil)
+                }
+            }
+        }
+    }
+    
+    fileprivate func getIndexPathsToUpdate(currentCount: Int, additionalItems: Int, max: Int, section: Int) -> [IndexPath] {
+        var indexPaths = [NSIndexPath]()
+        for i in currentCount..<(currentCount + additionalItems) {
+            if i > (max - 1) {
+                break
+            }
+            indexPaths.append(NSIndexPath(row: i, section: section))
+        }
+        
+        return indexPaths as [IndexPath]
+    }
 }
 

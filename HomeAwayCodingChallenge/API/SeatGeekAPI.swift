@@ -22,12 +22,12 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
     
     func call(urlParams: [String: String], completion: @escaping (([Mappable]) -> Void)) {
         let url = urlWith(baseUrl: baseURL, params: urlParams)
-        call(url: url, completion: completion)
+        //call(url: url, completion: completion)
     }
     
     // MARK: - Search API Delegate
     
-    func mapObject(from json: String) -> Mappable? {
+    func mapObject(from json: String) -> SearchResult? {
         if json.isEmpty {
             return nil
         }
@@ -48,12 +48,60 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
                 return performer
             }
             break
+        default:
+            return nil
         }
         
         return nil
     }
     
+    func queryItems<T>(with string: String, params: [String : String], completion: @escaping ((T) -> Void)) where T : Pagination, T : ResultList {
+        var paramsWithQuery = params
+        paramsWithQuery["q"] = string
+        let url = urlWith(baseUrl: baseURL, params: paramsWithQuery)
+        
+        Alamofire.request(url).responseJSON { response in
+            guard let jsonString = response.result.value else {
+                return
+            }
+            
+            let json = JSON(jsonString)
+            
+            guard let dictionary = json.dictionary else {
+                return
+            }
+            
+            guard let array = dictionary[self.type.rawValue]?.array else {
+                return
+            }
+            
+            var results = [SearchResult]()
+            
+            for jsonObject in array {
+                guard let jsonString = jsonObject.rawString() else {
+                    continue
+                }
+                
+                if let object = self.mapObject(from: jsonString) {
+                    results.append(object)
+                }
+            }
+            
+            var seatGeekResults = SeatGeekResults()
+            seatGeekResults.items = results
+            
+            if let metadata = dictionary[SearchResultType.meta.rawValue]?.rawString() {
+                if let meta = SeatGeekMeta(JSONString: metadata) {
+                    seatGeekResults.metadata = meta
+                }
+            }
+            
+            completion(seatGeekResults as! T)
+        }
+    }
+    
     // Protocol method that queries based on a string. Any API class could implement this delegate and provide results based on search text.
+    /*
     func queryItems(with string: String, completion: @escaping (([Mappable]) -> Void)) {
         let queryString = string.replacingOccurrences(of: " ", with: "+")
         
@@ -62,6 +110,7 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
         
         call(url: url, completion: completion)
     }
+ */
     
     func cacheKey() -> String {
         return type.rawValue
@@ -69,7 +118,7 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
     
     
     // MARK: - Private Methods
-    
+    /*
     fileprivate func call(url: String, completion: @escaping (([Mappable]) -> Void)) {
         Alamofire.request(url).responseJSON { [weak self] response in
             guard let strongSelf = self else {
@@ -90,7 +139,7 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
                 return
             }
             
-            var results = [Mappable]()
+            var results = [SearchResult]()
             
             for jsonObject in array {
                 guard let jsonString = jsonObject.rawString() else {
@@ -105,14 +154,16 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
             completion(results)
         }
     }
-    
+ 
+ */
     fileprivate func urlWith(baseUrl: String, params: [String: String]) -> String {
         // todo: The base url contains a client id as our first parameter. In the future, we should add parameters more dynamically in case the base url doesnt contain a parameter. That is, to make sure we use a & and not a ? in the url.
         var newUrlString = baseURL
         for (urlParam, value) in params {
             newUrlString = "\(newUrlString)&\(urlParam)=\(value)"
         }
-        return newUrlString
+        let url = newUrlString.replacingOccurrences(of: " ", with: "+")
+        return url
     }
     
     /*

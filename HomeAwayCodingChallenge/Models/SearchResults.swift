@@ -11,12 +11,14 @@ import IGListKit
 
 class SearchResults: NSObject, ListDiffable {
     
-    var items = [SearchResult]()
+    var results: BaseSearchResult
     var header = ""
+    var type: SearchResultType
     
-    init(results: [SearchResult], header: String) {
-        self.items = results
+    init(results: SeatGeekResults, header: String, type: SearchResultType) {
+        self.results = results
         self.header = header
+        self.type = type
     }
     
     public func diffIdentifier() -> NSObjectProtocol {
@@ -25,6 +27,13 @@ class SearchResults: NSObject, ListDiffable {
     
     public func isEqual(toDiffableObject object: ListDiffable?) -> Bool {
         return isEqual(object)
+    }
+    
+    func remainingItems() -> Int {
+        if results.isPageable() {
+            return results.getTotalItems() - results.getItems().count
+        }
+        return 0
     }
     
 }

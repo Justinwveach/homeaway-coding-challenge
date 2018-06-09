@@ -11,9 +11,9 @@ import ObjectMapper
 
 struct SeatGeekMeta: Mappable {
     
-    var perPage: Int?
-    var page: Int?
-    var total: Int?
+    var perPage: Int = 0
+    var page: Int = 0
+    var total: Int = 0
     
     init?(map: Map) {
         

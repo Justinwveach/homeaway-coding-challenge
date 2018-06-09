@@ -17,5 +17,18 @@ enum SearchResultType: String, SearchType {
     case event = "events"
     case venue = "venues"
     case performer = "performers"
+    case meta = "meta"
     
+    func sectionOrder() -> Int {
+        switch self {
+        case .event:
+            return 0
+        case .performer:
+            return 1
+        case .venue:
+            return 2
+        default:
+            return 3
+        }
+    }
 }

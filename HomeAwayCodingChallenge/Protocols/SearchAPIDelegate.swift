@@ -14,9 +14,9 @@ protocol SearchAPIDelegate {
     
     //func queryItems<T>(with string: String, completion: @escaping (([T]) -> Void)) where T : Mappable
     //func queryItems(with string: String, completion: (@escaping (JSON) -> Void))
-    func queryItems(with string: String, completion: (@escaping ([Mappable]) -> Void))
+    func queryItems<T: ResultList & Pagination>(with string: String, params: [String : String], completion: (@escaping (T) -> Void))
+    
     //func getObject<T: SearchResult>(json: String) -> T?
-    func mapObject(from json: String) -> Mappable?
     
     func cacheKey() -> String
 }

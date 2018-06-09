@@ -28,14 +28,14 @@ class TypeAheadSearch: NSObject, UISearchBarDelegate {
     }
         
     fileprivate func callApis(string: String) {
-        for (key, api) in apis {
-            api.queryItems(with: string) { [weak self] results in
+        for (_, api) in apis {
+            api.queryItems(with: string, params: [:]) { [weak self] (results: BaseSearchResult) in
                 guard let strongSelf = self else {
                     return
                 }
-                
-                strongSelf.cacheSearch(cacheKey: key, searchString: string, results: results)
-                strongSelf.delegate?.queried(items: results)
+                results.searchString = string
+                //strongSelf.cacheSearch(cacheKey: key, searchString: string, results: results)
+                strongSelf.delegate?.queried(results: results)
             }
         }
     }
@@ -48,7 +48,6 @@ class TypeAheadSearch: NSObject, UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.count >= 2 {
-            
             // todo: check cache
             callApis(string: searchText)
         } else {
