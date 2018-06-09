@@ -10,6 +10,8 @@ import UIKit
 import ObjectMapper
 import STXImageCache
 
+
+/// This class displays the details of a SearchResult. In the future, I may add a Container View and then load the approriate ViewController for varying SearchResults.
 class DetailsViewController: UIViewController {
 
     @IBOutlet weak var mainImageView: UIImageView!
@@ -22,8 +24,8 @@ class DetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // searchResult needs to be set before presenting
         assert(searchResult != nil, "DetailsViewController requires a SearchResult.")
-        //title = searchResult?.getTitle()
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
@@ -33,10 +35,8 @@ class DetailsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        /*
-        self.navigationController?.navigationBar.tintColor = UIColor.darkNavy
-        self.navigationController?.navigationBar.barTintColor = UIColor.white
- */
+        
+        // Configure our view before it is displayed
         configureView()
     }
     

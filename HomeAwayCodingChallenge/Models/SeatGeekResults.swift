@@ -15,6 +15,8 @@ class SeatGeekResults: BaseSearchResult {
     var items = [SearchResult]()
     var metadata: SeatGeekMeta?
     
+    // MARK: - Pagination
+    
     override func isPageable() -> Bool {
         // Metadata contains our pageable information
         if let meta = metadata {
@@ -37,12 +39,15 @@ class SeatGeekResults: BaseSearchResult {
         return metadata?.total ?? 0
     }
     
-    override func getItems() -> [SearchResult] {
-        return items
-    }
     
     override func getSearchString() -> String {
         return searchString
+    }
+    
+    // MARK: - ResultList
+    
+    override func getItems() -> [SearchResult] {
+        return items
     }
     
     override func append(items: [SearchResult]) {

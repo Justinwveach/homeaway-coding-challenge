@@ -10,13 +10,19 @@ import Foundation
 import ObjectMapper
 import SwiftyJSON
 
+
+/// An API class can implement this protocol to query items based on given url params/search text.
 protocol SearchAPIDelegate {
     
-    //func queryItems<T>(with string: String, completion: @escaping (([T]) -> Void)) where T : Mappable
-    //func queryItems(with string: String, completion: (@escaping (JSON) -> Void))
+    
+    /// Queries items for a given string with additional url parameters.
+    ///
+    /// - Parameters:
+    ///   - string: The string that was searched for.
+    ///   - params: Additional url parameters, if needed.
+    ///   - completion: Closure to be called with the resulting details.
+    /// - Returns: Nothing
     func queryItems<T: ResultList & Pagination>(with string: String, params: [String : String], completion: (@escaping (T) -> Void))
-    
-    //func getObject<T: SearchResult>(json: String) -> T?
-    
     func cacheKey() -> String
+    
 }

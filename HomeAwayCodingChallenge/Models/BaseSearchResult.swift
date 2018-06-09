@@ -8,6 +8,7 @@
 
 import Foundation
 
+// In an attempt to keep certain closures arguments generic (e.g. provide BaseSearchResult instead of SeatGeekResults). Closures were unable to infer the type of T where T = Pagination and ResultList. This is my attempt at keeping things generic.
 class BaseSearchResult: Pagination, ResultList {
     
     var searchString = ""

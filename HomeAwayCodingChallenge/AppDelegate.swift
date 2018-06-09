@@ -54,6 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - Core Data stack
 
+    // Note: End up using RealmSwift instead of CoreData. Leaving for now...
     lazy var persistentContainer: NSPersistentContainer = {
         /*
          The persistent container for the application. This implementation

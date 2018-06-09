@@ -11,6 +11,9 @@ import Alamofire
 import SwiftyJSON
 import ObjectMapper
 
+
+/// Class that calls the SeatGeekAPI
+/// View documentation at http://platform.seatgeek.com/
 class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
 
     var type: SearchResultType
@@ -20,18 +23,40 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
         super.init(baseURL: baseURL)
     }
     
-    func call(urlParams: [String: String], completion: @escaping (([Mappable]) -> Void)) {
+    // MARK: - Public Methods
+    
+    
+    /// Creates a url with the given parameters and then calls the API.
+    ///
+    /// - Parameters:
+    ///   - urlParams: Key value pairs for the url (i.e. ["q" : "Text to search", ...]
+    ///   - completion: Closure that is called with the results.
+    func call(urlParams: [String: String], completion: @escaping ((SeatGeekResults) -> Void)) {
         let url = urlWith(baseUrl: baseURL, params: urlParams)
-        //call(url: url, completion: completion)
+        Alamofire.request(url).responseJSON { response in
+            guard let jsonString = response.result.value else {
+                return
+            }
+            
+            let json = JSON(jsonString)
+            
+            if let seatGeekResults = self.convert(json) {
+                completion(seatGeekResults)
+            }
+        }
     }
     
-    // MARK: - Search API Delegate
     
+    /// This API returns different obects, so we check to see what was returned and then map that data to the appropriate object.
+    ///
+    /// - Parameter json: Data returned from API.
+    /// - Returns: Appropriate object that implements SearchResult. Nil if not successful.
     func mapObject(from json: String) -> SearchResult? {
         if json.isEmpty {
             return nil
         }
         
+        // Return the appropriate mapped object based on the type provided to this API instance
         switch type {
         case .event:
             if let event = Event(JSONString: json) {
@@ -55,8 +80,12 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
         return nil
     }
     
+    // MARK: - Search API Delegate
+    
     func queryItems<T>(with string: String, params: [String : String], completion: @escaping ((T) -> Void)) where T : Pagination, T : ResultList {
+        // Append other params if provided with our search query
         var paramsWithQuery = params
+        // 'q' is the url param required for a query
         paramsWithQuery["q"] = string
         let url = urlWith(baseUrl: baseURL, params: paramsWithQuery)
         
@@ -67,164 +96,73 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
             
             let json = JSON(jsonString)
             
-            guard let dictionary = json.dictionary else {
-                return
+            if let seatGeekResults = self.convert(json) {
+                completion(seatGeekResults as! T)
             }
-            
-            guard let array = dictionary[self.type.rawValue]?.array else {
-                return
-            }
-            
-            var results = [SearchResult]()
-            
-            for jsonObject in array {
-                guard let jsonString = jsonObject.rawString() else {
-                    continue
-                }
-                
-                if let object = self.mapObject(from: jsonString) {
-                    results.append(object)
-                }
-            }
-            
-            var seatGeekResults = SeatGeekResults()
-            seatGeekResults.items = results
-            
-            if let metadata = dictionary[SearchResultType.meta.rawValue]?.rawString() {
-                if let meta = SeatGeekMeta(JSONString: metadata) {
-                    seatGeekResults.metadata = meta
-                }
-            }
-            
-            completion(seatGeekResults as! T)
         }
     }
     
-    // Protocol method that queries based on a string. Any API class could implement this delegate and provide results based on search text.
-    /*
-    func queryItems(with string: String, completion: @escaping (([Mappable]) -> Void)) {
-        let queryString = string.replacingOccurrences(of: " ", with: "+")
-        
-        // Add any other params that are desired for a typical search query (i.e. per_page=25&page=3)
-        let url = "\(baseURL)&per_page=10&q=\(queryString)"
-        
-        call(url: url, completion: completion)
-    }
- */
     
+    /// Converts the json returned from API call to our desired object - or nil if unsuccessful.
+    ///
+    /// - Parameter json: Data to parse.
+    /// - Returns: SeatGeekResults
+    fileprivate func convert(_ json: JSON) -> SeatGeekResults? {
+        guard let dictionary = json.dictionary else {
+            return nil
+        }
+        
+        // Our SeatGeekAPI instance should have type that indicates what we are looking for.
+        // The expected json should be in this format.
+        guard let array = dictionary[self.type.rawValue]?.array else {
+            return nil
+        }
+        
+        var results = [SearchResult]()
+        
+        for jsonObject in array {
+            guard let jsonString = jsonObject.rawString() else {
+                continue
+            }
+            
+            // Map the json string to the appropriate object.
+            if let object = self.mapObject(from: jsonString) {
+                results.append(object)
+            }
+        }
+        
+        let seatGeekResults = SeatGeekResults()
+        seatGeekResults.items = results
+        
+        // Our API calls should contain metadata about the results (i.e. page number, page size, etc.)
+        if let metadata = dictionary[SearchResultType.meta.rawValue]?.rawString() {
+            if let meta = SeatGeekMeta(JSONString: metadata) {
+                seatGeekResults.metadata = meta
+            }
+        }
+        
+        return seatGeekResults
+    }
+    
+    // Unique identifier that will be used to cache results
     func cacheKey() -> String {
         return type.rawValue
     }
-    
-    
-    // MARK: - Private Methods
-    /*
-    fileprivate func call(url: String, completion: @escaping (([Mappable]) -> Void)) {
-        Alamofire.request(url).responseJSON { [weak self] response in
-            guard let strongSelf = self else {
-                return
-            }
-            
-            guard let jsonString = response.result.value else {
-                return
-            }
-            
-            let json = JSON(jsonString)
-            
-            guard let dictionary = json.dictionary else {
-                return
-            }
-            
-            guard let array = dictionary[strongSelf.type.rawValue]?.array else {
-                return
-            }
-            
-            var results = [SearchResult]()
-            
-            for jsonObject in array {
-                guard let jsonString = jsonObject.rawString() else {
-                    continue
-                }
-                
-                if let object = strongSelf.mapObject(from: jsonString) {
-                    results.append(object)
-                }
-            }
-            
-            completion(results)
-        }
-    }
- 
- */
+
+    // URL example https://api.seatgeek.com/2/events?client_id=<your client id>&<param>=<value>&<param>=<value>
     fileprivate func urlWith(baseUrl: String, params: [String: String]) -> String {
         // todo: The base url contains a client id as our first parameter. In the future, we should add parameters more dynamically in case the base url doesnt contain a parameter. That is, to make sure we use a & and not a ? in the url.
         var newUrlString = baseURL
+        
+        // Append key value pairs to the url
         for (urlParam, value) in params {
             newUrlString = "\(newUrlString)&\(urlParam)=\(value)"
         }
+        
+        // Seat Geek APIs expects a '+' instead of a space in our search strings
         let url = newUrlString.replacingOccurrences(of: " ", with: "+")
+        
         return url
     }
     
-    /*
-    // URL example
-    // https://api.seatgeek.com/2/events?client_id=<your client id>&q=Texas+Ranger
-    func queryItems<T: SearchResult>(by types: [SearchResultType], string: String, completion: (([T]) -> Void)) {
-        for type in types {
-            guard let url = createUrl(type: type, string: string) else {
-                continue
-            }
-        }
-        
-        // ensure
-        Alamofire.request(url).responseArray { (response: DataResponse<[Event]>) in
-            let statusCode = response.response?.statusCode
-            let results = response.result.value
-            if let results = results {
-                for result in results {
-                    
-                }
-            }
-        }
-    }
-    
-    func queryEvents(string: String) {
-        Alamofire.request(url).responseArray { (response: DataResponse<[Event]>) in
-            let statusCode = response.response?.statusCode
-            let results = response.result.value
-            if let results = results {
-                for result in results {
-                    
-                }
-            }
-        }
-    }
-    
-    func createUrl(type: SearchResultType, string: String) -> String? {
-        if !seatgeekApiUrl.isEmpty && !seatgeekClientId.isEmpty && !string.isEmpty {
-            return "\(seatgeekApiUrl)\(type.rawValue)?client_id=\(seatgeekClientId)&q=\(string)"
-        }
-        return nil
-    }
-    */
-    
-   
-    
-//    func submit(request: URLRequest, handler: HttpResponseHandler?) {
-//        if !Connectivity.isConnectedToInternet() {
-//            handler?.onFailure(JSON("No internet connection."))
-//            return
-//        }
-//
-//        Alamofire.request(request).responseJSON { response in
-//            let statusCode = response.response?.statusCode
-//            let json = JSON(response.result.value!)
-//            if statusCode == 200 {
-//                handler?.onSuccess(json)
-//            } else {
-//                handler?.onFailure(json)
-//                DDLogDebug("Unable to fetch.")
-//            }
-//        }
-//    }
 }

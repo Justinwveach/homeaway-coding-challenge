@@ -9,6 +9,8 @@
 import Foundation
 import IGListKit
 
+
+/// Protocol that is used to retrieve details for a particular search item.
 protocol SearchResult {
 
     func getUniqueId() -> String

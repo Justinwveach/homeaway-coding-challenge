@@ -10,7 +10,6 @@ import XCTest
 @testable import HomeAwayCodingChallenge
 import ObjectMapper
 
-
 class ObjectMapperTests: XCTestCase {
     
     let performerOneId = 39393
@@ -70,7 +69,7 @@ class ObjectMapperTests: XCTestCase {
         print(performerJson)
         if let performer = Performer(JSONString: performerJson) {
             XCTAssert(performer.name == performerOneName)
-            XCTAssert(performer.images?.count == 4)
+            XCTAssert(performer.images.count == 4)
             XCTAssert(performer.id == performerOneId)
             XCTAssert(!performer.image.isEmpty)
         }

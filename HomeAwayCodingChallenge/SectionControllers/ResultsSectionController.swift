@@ -10,9 +10,12 @@ import Foundation
 import IGListKit
 import STXImageCache
 
+
+/// This class handles displaying the cells in each section.
 class ResultsSectionController: ListSectionController {
     
     var searchResults: SectionData!
+    // Delegate that is notified if more items need to be loaded.
     var delegate: LoadItemsDelegate?
     
     override init() {
@@ -31,6 +34,8 @@ class ResultsSectionController: ListSectionController {
     
     
     override func numberOfItems() -> Int {
+        // The last cell will be a "Load More Items" button - or something else if there aren't any items.
+        // todo: Remove cell all together if it's not needed.
         return searchResults.results.getItems().count + 1
     }
     
@@ -42,6 +47,7 @@ class ResultsSectionController: ListSectionController {
                 fatalError()
         }
         
+        // todo: move these configuration details into the ResultCollectionViewCell class
         let count = searchResults.results.getItems().count
         if index == count {
             var titleText = "Load More Items"
@@ -77,6 +83,7 @@ class ResultsSectionController: ListSectionController {
         cell.locationLabel.text = searchResult.getThirdInfo()
         cell.dateLabel.text = searchResult.getSecondaryInfo()
         
+        // Get cached image or download
         if let url = searchResult.getThumbnailUrl() {
             cell.mainImageView.stx.image(atURL: url)
             _ = cell.mainImageView.stx.image(atURL: url, placeholder: #imageLiteral(resourceName: "ic_placeholder"), progress: { progress in
@@ -89,6 +96,7 @@ class ResultsSectionController: ListSectionController {
             cell.mainImageView.image = #imageLiteral(resourceName: "ic_placeholder")
         }
         
+        // Show favorited indicator if favorited
         cell.favoriteImageView.image = nil
         FavoriteStore.shared.checkFavorite(id: searchResult.getUniqueId()) { isFavorite in
             if isFavorite {
@@ -105,11 +113,12 @@ class ResultsSectionController: ListSectionController {
     
     override func didSelectItem(at index: Int) {
         if index < searchResults.results.getItems().count {
-            // note: Would probably push a respective view controller for each SearchResultType (e.g. Event, Venue, or Performer. Another option would be to have a container inside the Details controller that loads the appropraite VC there.
+            // note: Would probably push a respective view controller for each SearchResultType (e.g. Event, Venue, or Performer). Another option would be to have a container inside the Details controller that loads the appropraite VC there.
             let detailsViewController = DetailsViewController(nibName: "DetailsViewController", bundle: nil)
             detailsViewController.searchResult = searchResults.results.getItems()[index]
             viewController?.navigationController?.pushViewController(detailsViewController, animated: true)
         } else {
+            // Last item in the section that handles loading more items
             delegate?.loadMoreItems(for: searchResults)
         }
     }

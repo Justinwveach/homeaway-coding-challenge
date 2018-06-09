@@ -9,14 +9,18 @@
 import Foundation
 import ObjectMapper
 
+
+/// This model represents a Venue that is returned from the Seat Geek API. Documentation can be found at http://platform.seatgeek.com/#venues
 struct Venue: Mappable, SearchResult {
     
-    // According to seatgeek documentation (http://platform.seatgeek.com/#venues), all of these fields are optional with a default value of null
+    // According to seatgeek documentation, all of these fields are optional with a default value of null
     var id: Int?
     var city: String?
     var name: String?
     var state: String?
     var country: String?
+    
+    // MARK: - Mappable
     
     init?(map: Map) {
         
@@ -30,7 +34,7 @@ struct Venue: Mappable, SearchResult {
         country <- map["country"]
     }
     
-    // MARK: - Search Result Delegate
+    // MARK: - SearchResult
 
     func getUniqueId() -> String {
         return "VENUE-\(id ?? 0)"
@@ -43,20 +47,9 @@ struct Venue: Mappable, SearchResult {
     func getThirdInfo() -> String {
         if let city = city,
            let state = state {
-            return "(\(city), \(state)"
+            return "\(city), \(state)"
         }
         return "Location Unknown"
     }
     
-    // todo: Add other venue properties if needed
-    
-    /*
-    init(map: Mapper) throws {
-        id = map.optionalFrom("id")
-        city = map.optionalFrom("city")
-        name = map.optionalFrom("name")
-        state = map.optionalFrom("state")
-        country = map.optionalFrom("country")
-    }
-    */
 }

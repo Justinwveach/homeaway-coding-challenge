@@ -8,6 +8,8 @@
 
 import Foundation
 
+
+/// Protocol that provides methods for handling search result data
 protocol ResultList {
     
     func getItems() -> [SearchResult]

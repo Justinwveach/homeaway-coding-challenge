@@ -8,6 +8,8 @@
 
 import Foundation
 
+
+/// This protocol can be implemented if data needs to be paginated.
 protocol Pagination {
     
     func isPageable() -> Bool

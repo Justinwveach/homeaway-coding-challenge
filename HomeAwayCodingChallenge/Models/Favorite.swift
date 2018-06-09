@@ -9,6 +9,8 @@
 import Foundation
 import RealmSwift
 
+
+/// This model represents a favorited(or not) object.
 class Favorite: Object {
     
     @objc dynamic var id = ""

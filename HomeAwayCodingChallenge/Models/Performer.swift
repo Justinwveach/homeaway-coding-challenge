@@ -9,7 +9,8 @@
 import Foundation
 import ObjectMapper
 
-// Documentation: http://platform.seatgeek.com/#performers
+
+/// This model represents a Performer that is returned from the Seat Geek API. Documentation can be found at http://platform.seatgeek.com/#performers
 struct Performer: Mappable, SearchResult {
     
     // According to documentation, id is the only optional field for Performer
@@ -18,6 +19,22 @@ struct Performer: Mappable, SearchResult {
     var image = ""
     var images = [String: String]()
     var primary = false
+    
+    // MARK: - Mappable
+    
+    init?(map: Map) {
+        id <- map["id"]
+        name <- map["name"]
+        image <- map["image"]
+        images <- map["images"]
+        primary <- map["primary"]
+    }
+    
+    mutating func mapping(map: Map) {
+        
+    }
+    
+    // MARK: - SearchResult
     
     func getUniqueId() -> String {
         return "PERFORMER-\(id ?? 0)"
@@ -59,20 +76,5 @@ struct Performer: Mappable, SearchResult {
         }
         return nil
     }
-    
-    // TODO: Add other properties as needed
-   
-    init?(map: Map) {
-        id <- map["id"]
-        name <- map["name"]
-        image <- map["image"]
-        images <- map["images"]
-        primary <- map["primary"]
-    }
-    
-    mutating func mapping(map: Map) {
-        
-    }
-    
     
 }

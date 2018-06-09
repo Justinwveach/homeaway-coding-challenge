@@ -116,7 +116,7 @@
 		E9B3567F20C9F1B1006B261C /* DetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DetailsViewController.xib; sourceTree = "<group>"; };
 		E9B3568220C9FB02006B261C /* SeatGeekResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatGeekResults.swift; sourceTree = "<group>"; };
 		E9B3568420C9FB69006B261C /* SearchResultType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultType.swift; sourceTree = "<group>"; };
-		E9B3568620C9FD03006B261C /* SeatGeekAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatGeekAPI.swift; sourceTree = "<group>"; };
+		E9B3568620C9FD03006B261C /* SeatGeekAPI.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = SeatGeekAPI.swift; sourceTree = "<group>"; };
 		E9B3568820CA1C05006B261C /* TypeAheadSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeAheadSearch.swift; sourceTree = "<group>"; };
 		E9B3568C20CA1E67006B261C /* TypeAheadSearchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeAheadSearchDelegate.swift; sourceTree = "<group>"; };
 		E9B3568E20CA1EFD006B261C /* BaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPI.swift; sourceTree = "<group>"; };
@@ -295,10 +295,10 @@
 				E9B3566120C9AAD3006B261C /* Venue.swift */,
 				E9B3566520C9CAC5006B261C /* Performer.swift */,
 				E9B3567520C9DE2A006B261C /* SectionData.swift */,
-				E9B3568220C9FB02006B261C /* SeatGeekResults.swift */,
 				E96AF8AD20CB317600AC1D0C /* SeatGeekMeta.swift */,
 				E96AF8A120CB0CD700AC1D0C /* Favorite.swift */,
 				E9008D4E20CB923500F721F2 /* BaseSearchResult.swift */,
+				E9B3568220C9FB02006B261C /* SeatGeekResults.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
