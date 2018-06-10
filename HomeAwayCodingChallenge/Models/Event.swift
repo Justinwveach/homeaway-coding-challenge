@@ -69,13 +69,13 @@ struct Event: Mappable, SearchResult {
         return !title.isEmpty ? title : "N/A"
     }
     
-    func getSecondaryInfo() -> String {
+    func getPrimaryInfo() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E, d MMM yyyy h:mm a"
         return dateFormatter.string(from: date)
     }
     
-    func getThirdInfo() -> String {
+    func getSecondaryInfo() -> String {
         if let venue = venue {
             if let city = venue.city,
                let state = venue.state {

@@ -44,7 +44,7 @@ struct Venue: Mappable, SearchResult {
         return name ?? "N/A"
     }
     
-    func getThirdInfo() -> String {
+    func getSecondaryInfo() -> String {
         if let city = city,
            let state = state {
             return "\(city), \(state)"

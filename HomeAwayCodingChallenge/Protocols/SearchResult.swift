@@ -15,8 +15,8 @@ protocol SearchResult {
 
     func getUniqueId() -> String
     func getTitle() -> String
+    func getPrimaryInfo() -> String
     func getSecondaryInfo() -> String
-    func getThirdInfo() -> String
     func getThumbnailUrl() -> URL?
     func getMainImageUrl() -> URL?
     
@@ -25,11 +25,11 @@ protocol SearchResult {
 // Want some of the methods to be optional
 extension SearchResult {
     
-    func getSecondaryInfo() -> String {
+    func getPrimaryInfo() -> String {
         return ""
     }
     
-    func getThirdInfo() -> String {
+    func getSecondaryInfo() -> String {
         return ""
     }
     

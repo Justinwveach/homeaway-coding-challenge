@@ -85,8 +85,8 @@ class ResultsSectionController: ListSectionController {
         let searchResult = searchResults.results.getItems()[index]
         
         cell.titleLabel.text = searchResult.getTitle()
-        cell.locationLabel.text = searchResult.getThirdInfo()
-        cell.dateLabel.text = searchResult.getSecondaryInfo()
+        cell.locationLabel.text = searchResult.getSecondaryInfo()
+        cell.dateLabel.text = searchResult.getPrimaryInfo()
         
         // Get cached image or download
         if let url = searchResult.getThumbnailUrl() {

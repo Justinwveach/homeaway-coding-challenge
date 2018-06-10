@@ -97,8 +97,8 @@ class DetailsViewController: UIViewController {
             mainImageView.image = #imageLiteral(resourceName: "img_stadium_seats")
         }
             
-        dateLabel.text = searchResult.getThirdInfo()
-        locationLabel.text = searchResult.getSecondaryInfo()
+        dateLabel.text = searchResult.getSecondaryInfo()
+        locationLabel.text = searchResult.getPrimaryInfo()
     }
     
     fileprivate func configureFavorite() {
