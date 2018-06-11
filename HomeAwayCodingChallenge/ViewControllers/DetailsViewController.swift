@@ -37,6 +37,7 @@ class DetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         
         // Configure our view before it is displayed
+        title = ""
         configureView()
     }
     
