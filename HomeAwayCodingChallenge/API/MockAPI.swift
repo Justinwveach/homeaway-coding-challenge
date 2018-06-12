@@ -15,7 +15,7 @@ import ObjectMapper
 /// API that will be used for testing
 class MockAPI: BaseAPI, SearchAPIDelegate {
     
-    func queryItems<T>(with string: String, params: [String : String], completion: @escaping ((T) -> Void)) where T : Pagination, T : ResultList {
+    func queryItems<T>(with string: String, params: [URLQueryItem], completion: @escaping ((T) -> Void)) where T : Pagination, T : ResultList {
         if string == "^^" {
             let event = Event(title: "Test", date: Date())
             

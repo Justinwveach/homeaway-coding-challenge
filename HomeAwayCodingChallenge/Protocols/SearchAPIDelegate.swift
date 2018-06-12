@@ -22,7 +22,8 @@ protocol SearchAPIDelegate {
     ///   - params: Additional url parameters, if needed.
     ///   - completion: Closure to be called with the resulting details.
     /// - Returns: Nothing
-    func queryItems<T: ResultList & Pagination>(with string: String, params: [String : String], completion: (@escaping (T) -> Void))
+    func queryItems<T: ResultList & Pagination>(with string: String, params: [URLQueryItem], completion: (@escaping (T) -> Void))
+        
     func cacheKey() -> String
     
 }

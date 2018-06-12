@@ -15,12 +15,12 @@ import ObjectMapper
 /// Class that calls the SeatGeekAPI
 /// View documentation at http://platform.seatgeek.com/
 class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
-
+    
     var type: SearchResultType
     
-    init(baseURL: String, type: SearchResultType) {
+    init(baseURL: String, defaultQueryItems: [URLQueryItem], type: SearchResultType) {
         self.type = type
-        super.init(baseURL: baseURL)
+        super.init(baseURL: baseURL, defaultQueryItems: defaultQueryItems)
     }
     
     // MARK: - Public Methods
@@ -31,8 +31,11 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
     /// - Parameters:
     ///   - urlParams: Key value pairs for the url (i.e. ["q" : "Text to search", ...]
     ///   - completion: Closure that is called with the results.
-    func call(urlParams: [String: String], completion: @escaping ((SeatGeekResults) -> Void)) {
-        let url = urlWith(baseUrl: baseURL, params: urlParams)
+    func call(urlParams: [URLQueryItem], completion: @escaping ((SeatGeekResults) -> Void)) {
+        guard let url = urlWith(queryItems: urlParams) else {
+            return
+        }
+
         Alamofire.request(url).responseJSON { response in
             guard let jsonString = response.result.value else {
                 return
@@ -82,12 +85,16 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
     
     // MARK: - Search API Delegate
     
-    func queryItems<T>(with string: String, params: [String : String], completion: @escaping ((T) -> Void)) where T : Pagination, T : ResultList {
+    func queryItems<T>(with string: String, params: [URLQueryItem], completion: @escaping ((T) -> Void)) where T : Pagination, T : ResultList {
         // Append other params if provided with our search query
         var paramsWithQuery = params
+        
         // 'q' is the url param required for a query
-        paramsWithQuery["q"] = string
-        let url = urlWith(baseUrl: baseURL, params: paramsWithQuery)
+        paramsWithQuery.append(URLQueryItem(name: "q", value: string))
+        
+        guard let url = urlWith(queryItems: paramsWithQuery) else {
+            return
+        }
         
         Alamofire.request(url).responseJSON { response in
             guard let jsonString = response.result.value else {
@@ -147,22 +154,6 @@ class SeatGeekAPI: BaseAPI, SearchAPIDelegate {
     // Unique identifier that will be used to cache results
     func cacheKey() -> String {
         return type.rawValue
-    }
-
-    // URL example https://api.seatgeek.com/2/events?client_id=<your client id>&<param>=<value>&<param>=<value>
-    fileprivate func urlWith(baseUrl: String, params: [String: String]) -> String {
-        // todo: The base url contains a client id as our first parameter. In the future, we should add parameters more dynamically in case the base url doesnt contain a parameter. That is, to make sure we use a & and not a ? in the url.
-        var newUrlString = baseURL
-        
-        // Append key value pairs to the url
-        for (urlParam, value) in params {
-            newUrlString = "\(newUrlString)&\(urlParam)=\(value)"
-        }
-        
-        // Seat Geek APIs expects a '+' instead of a space in our search strings
-        let url = newUrlString.replacingOccurrences(of: " ", with: "+")
-        
-        return url
     }
     
 }

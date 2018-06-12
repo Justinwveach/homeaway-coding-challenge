@@ -53,7 +53,7 @@ class TypeAheadSearch: NSObject, UISearchBarDelegate {
     /// - Parameter string: The text to be searched.
     fileprivate func callApis(string: String) {
         for api in apis {
-            api.queryItems(with: string, params: [:]) { [weak self] (results: BaseSearchResult) in
+            api.queryItems(with: string, params: []) { [weak self] (results: BaseSearchResult) in
                 guard let strongSelf = self else {
                     return
                 }

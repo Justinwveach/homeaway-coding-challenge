@@ -32,6 +32,7 @@ class SearchViewController: UIViewController {
     var performerSection = SectionData(results: SeatGeekResults(), header: "Performers", type: .performer)
     var venueSection = SectionData(results: SeatGeekResults(), header: "Venues", type: .venue)
     
+    let clientIdQueryItem = URLQueryItem(name: "client_id", value: seatgeekClientId)
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -80,16 +81,20 @@ class SearchViewController: UIViewController {
     fileprivate func configureTypeAhead() {
         // This is where we could configure an API to call a certain endpoint with our search text.
         // We could also search TicketMaster or provide a url for SeatGeek that will give recommendations instead of a query results
-        let eventApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.event.rawValue)?client_id=\(seatgeekClientId)", type: .event)
-        let venueApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.venue.rawValue)?client_id=\(seatgeekClientId)", type: .venue)
-        let performerApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.performer.rawValue)?client_id=\(seatgeekClientId)", type: .performer)
+//        let eventApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.event.rawValue)?client_id=\(seatgeekClientId)", type: .event)
+//        let venueApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.venue.rawValue)?client_id=\(seatgeekClientId)", type: .venue)
+//        let performerApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.performer.rawValue)?client_id=\(seatgeekClientId)", type: .performer)
+        
+        let eventApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.event.rawValue)", defaultQueryItems: [clientIdQueryItem], type: .event)
+        let performerApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.performer.rawValue)", defaultQueryItems: [clientIdQueryItem], type: .performer)
+        let venueApi = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(SearchResultType.venue.rawValue)", defaultQueryItems: [clientIdQueryItem], type: .venue)
         
         typeAheadSearch.add(api: eventApi)
         typeAheadSearch.add(api: venueApi)
         typeAheadSearch.add(api: performerApi)
         
         #if DEBUG
-        let mockApi = MockAPI(baseURL: "")
+        let mockApi = MockAPI(baseURL: "", defaultQueryItems: [])
         typeAheadSearch.add(api: mockApi)
         #endif
         // Set the delegate so we can receive a callback with results
@@ -143,7 +148,7 @@ extension SearchViewController: TypeAheadSearchDelegate {
             }
             
             // Check to see what kind of results were returned and update our appropriate section
-            var type: SearchResultType = .event
+            var type: SearchResultType? = nil
             if let _ = results.getItems() as? [Event] {
                 type = .event
                 self.eventSection.results = results as! BaseSearchResult
@@ -158,7 +163,9 @@ extension SearchViewController: TypeAheadSearchDelegate {
             }
 
             // Update the appropriate collection view section
-            self.collectionView.reloadSections(NSIndexSet(index: type.sectionOrder()) as IndexSet)
+            if let type = type {
+                self.collectionView.reloadSections(NSIndexSet(index: type.sectionOrder()) as IndexSet)
+            }
 
         }
     }
@@ -179,11 +186,15 @@ extension SearchViewController: LoadItemsDelegate {
     
     // Right now, we are handling the loading of more data. In the future, I may move this to the TypeAheadSearch.
     func loadMoreItems(for section: SectionData) {
-        let api = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(section.type.rawValue)?client_id=\(seatgeekClientId)", type: section.type)
+        let api = SeatGeekAPI(baseURL: "\(seatgeekApiUrl)\(section.type.rawValue)", defaultQueryItems: [clientIdQueryItem], type: section.type)
         
         // Ensure this section contains Pageable data
         if section.results.isPageable() {
-            api.queryItems(with: section.results.getSearchString(), params: ["per_page": "\(section.results.getPageSize())", "page": "\(section.results.getCurrentPage() + 1)"]) { [weak self] (response: SeatGeekResults) in
+            var queryItems = [clientIdQueryItem]
+            queryItems.append(URLQueryItem(name: "per_page", value: "\(section.results.getPageSize())"))
+            queryItems.append(URLQueryItem(name: "page", value: "\(section.results.getCurrentPage() + 1)"))
+            api.queryItems(with: section.results.getSearchString(), params: queryItems) { [weak self] (response: SeatGeekResults) in
+                
                 DispatchQueue.main.async { [weak self] in
                     guard let strongSelf = self else {
                         return
